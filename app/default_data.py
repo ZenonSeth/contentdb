@@ -57,6 +57,10 @@ def populate_test_data(session):
 	tags = { x.name : x for x in Tag.query.all() }
 	admin_user = User.query.filter_by(rank=UserRank.ADMIN).first()
 	v4 = LuantiRelease.query.filter_by(protocol=32).first()
+	if v4 is None:
+		v4 = LuantiRelease("0.4.16", 32)
+		session.add(v4)
+		session.flush()
 	v51 = LuantiRelease.query.filter_by(protocol=38).first()
 
 	ez = User("Shara")
