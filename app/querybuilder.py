@@ -210,9 +210,9 @@ class QueryBuilder:
 		if self.version:
 			releases_query = releases_query \
 				.filter(or_(PackageRelease.min_rel_id==None,
-					PackageRelease.min_rel_id <= self.version.id)) \
+					PackageRelease.min_rel.has(LuantiRelease.protocol <= self.version.protocol))) \
 				.filter(or_(PackageRelease.max_rel_id==None,
-					PackageRelease.max_rel_id >= self.version.id))
+					PackageRelease.max_rel.has(LuantiRelease.protocol >= self.version.protocol)))
 
 		return releases_query.all()
 
@@ -330,12 +330,12 @@ class QueryBuilder:
 
 		if self.version:
 			query = query.filter(Package.releases.any(and_(or_(PackageRelease.min_rel_id==None,
-					PackageRelease.min_rel_id <= self.version.id), or_(PackageRelease.max_rel_id==None,
-					PackageRelease.max_rel_id >= self.version.id))))
+					PackageRelease.min_rel.has(LuantiRelease.protocol <= self.version.protocol)), or_(PackageRelease.max_rel_id==None,
+					PackageRelease.max_rel.has(LuantiRelease.protocol >= self.version.protocol)))))
 		elif self.not_version:
 			query = query.filter(~Package.releases.any(and_(or_(PackageRelease.min_rel_id==None,
-					PackageRelease.min_rel_id <= self.not_version.id), or_(PackageRelease.max_rel_id==None,
-					PackageRelease.max_rel_id >= self.not_version.id))))
+					PackageRelease.min_rel.has(LuantiRelease.protocol <= self.not_version.protocol)), or_(PackageRelease.max_rel_id==None,
+					PackageRelease.max_rel.has(LuantiRelease.protocol >= self.not_version.protocol)))))
 
 		return query
 
